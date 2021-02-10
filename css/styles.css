@@ -1,6 +1,7 @@
 body {
     background-color: #191919;
     color: lightgrey;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 #content {
@@ -25,19 +26,19 @@ button:hover {
 
 
 #addProjWin {
-  display: block; /* Hidden by default */
+  display: none;
   position: fixed;
   z-index: 1;
-  top: 20%;
-  left: 30%;
-  width: 40%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 310px;
   overflow: auto;
   background-color: #191919;
   border: 2px solid gray;
   border-radius: 15px;
   text-align: center;
   opacity: 100%;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,4 +47,58 @@ button:hover {
 #checklistDiv {
     display: flex;
     justify-content: space-between;
+}
+
+.modalTag {
+    font-family: inherit;
+    margin:auto;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.modalInput{
+    width: 250px;
+    margin: auto;
+    margin-bottom: 5px;
+}
+
+#projectChecklist{
+    margin: 10px 5px 5px 25px ;
+    align-self: center;
+}
+
+#winTitle {
+    font-size: 30px;
+    margin-bottom: 10px;
+    margin:auto;
+}
+
+.close {
+    font-size: 25px;
+    margin-right: 10px;
+}
+
+.close:hover {
+    opacity: 60%;
+}
+
+#add {
+    width: 100px;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    background-color: gray ;
+    color: #191919;
+    border-color: gray;
+}
+
+#add:hover {
+    background-color: #191919 ;
+    color: gray;
+    border-color: gray;
+}
+
+#closeDiv {
+    display: flex;
+    flex-direction: row-reverse;
 }
