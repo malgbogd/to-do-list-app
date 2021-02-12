@@ -1,22 +1,36 @@
 const allProjects = [];
-let newProject;
 
-let newProjectName = document.getElementById("projectName");
-let newProjectDescription = document.getElementById("projectDescription"); 
-let newProjectDeadline = document.getElementById("projectDeadline");
-let newProjectChecklist = document.getElementById("projectChecklist");
+let projName;
+let projDescriptionL; 
+let projDeadline;
+let projChecklist;
 
 const page = document.getElementById("content");
+let cards;
 
 
 const createBtnAddProject = (()=> {
+    const btnDiv = document.createElement("div");
+    btnDiv.id = "btnDiv";
     const addProject = document.createElement("button");
     addProject.innerHTML = "+ add new project";
     addProject.id = "addProjBtn";
-    page.appendChild(addProject);
-    addProject.addEventListener("click", ()=> {
+    btnDiv.appendChild(addProject);
+    page.appendChild(btnDiv);
+    
+    addProject.addEventListener("click", ()=> { 
+        if (document.getElementById("addProjWin") == null) {
+            createModal();
+        }
         document.getElementById("addProjWin").style.display = "block";
-    });
+        });
+    
+    
+})();
+
+const createProjectCardsDiv = (()=>{
+    cards = document.createElement("div");
+    page.appendChild(cards);
 })();
 
 const project = (name, description, deadline, checklist) => {
@@ -50,9 +64,7 @@ const project = (name, description, deadline, checklist) => {
 
 };
 
-
-const createModal = (() => {
-
+function createModal() {
     const modal = document.createElement("div");
     modal.id = "addProjWin"
 
@@ -129,31 +141,110 @@ const createModal = (() => {
     modal.appendChild(checklistDiv);
     modal.appendChild(addBtnWin);
     document.body.appendChild(modal);
-    
-    return [nameInput, descriptionInput, deadlineInput, checklistInput];
-})();
 
-document.getElementById("add").addEventListener("click", ()=>{
-    getInput()
-    newProject = project(newProjectName,newProjectDescription,newProjectDeadline, newProjectChecklist);
-    allProjects.push(newProject);
-    console.log(allProjects);
-    clearInput(); 
-    return newProject;
-});
-    
+    addBtnWin.addEventListener("click", ()=>{
+        getInput()
+        let newProject = project(projName,projDescription,projDeadline, projChecklist);
+        allProjects.push(newProject);
+        clearInput();
+        document.getElementById("addProjWin").style.display = "none";
+        displayProjects() 
+    });
+};
     
 function getInput() {
-newProjectName = document.getElementById("projectName").value;
-newProjectDescription = document.getElementById("projectDescription").value; 
-newProjectDeadline = document.getElementById("projectDeadline").value;
-newProjectChecklist = document.getElementById("projectChecklist").value;
-return [newProjectName, newProjectDescription, newProjectDeadline, newProjectChecklist];
+    projName = document.getElementById("projectName").value;
+    projDescription= document.getElementById("projectDescription").innerHTML; 
+    projDeadline= document.getElementById("projectDeadline").value;
+    projChecklist = document.getElementById("projectChecklist").value;
+}
+   
+function clearInput() {
+    document.getElementById("projectName").value = "";
+    document.getElementById("projectDescription").value = "";
+    document.getElementById("projectDeadline").value= "";
+    document.getElementById("projectChecklist").value = "off";
+}    
+
+function displayProjects() {
+ 
+    cards.innerHTML="";
+
+    allProjects.forEach((element) => {
+
+    const closeDiv = document.createElement("div");
+    closeDiv.id ="closeDiv";
+    
+    const closeSign = document.createElement("span");
+    closeSign.innerHTML = "&times;";
+    closeSign.className = "delete";
+    closeSign.addEventListener("click", () =>{
+    allProjects.pop(element);
+    cards.removeChild(projectCard);
+        });
+
+    closeDiv.appendChild(closeSign);
+
+    const projectCard = document.createElement("div");
+    projectCard.className = "projCard";
+
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "projectHeader"
+
+    const projTitle = document.createElement("div");
+    projTitle.innerHTML = String(element.name);
+    projTitle.className = "projTitle"
+
+    const projDead = document.createElement("div");
+    projDead.innerHTML = (element.deadline).toDateString();
+
+    headerDiv.appendChild(projTitle);
+    headerDiv.appendChild(projDead);
+
+    const checklistDiv = document.createElement("div");
+
+    const projDescr = document.createElement("div");
+    projDescr.innerHTML = String(element.description);
+    projDescr.className = "projDescr";
+
+    const buttonDiv = document.createElement("div");
+    buttonDiv.className = "buttonDiv";
+
+    const changeName = document.createElement("button");
+    changeName.innerHTML = "Edit Name";
+    changeName.className = "projBtn";
+
+    const changeDate = document.createElement("button");
+    changeDate.innerHTML = "Edit Deadline";
+    changeDate.className = "projBtn";
+
+    const changeDesription = document.createElement("button");
+    changeDesription.innerHTML = "Edit Description"
+    changeDesription.className = "projBtn";
+
+    const addChecklistPosition = document.createElement("button");
+    addChecklistPosition.innerHTML = "Add Checklist Position"
+    addChecklistPosition.className = "projBtn";
+
+    buttonDiv.appendChild(changeName);
+    buttonDiv.appendChild(changeDate);
+    buttonDiv.appendChild(changeDesription);
+    buttonDiv.appendChild(addChecklistPosition);
+
+    projectCard.appendChild(closeDiv);
+    projectCard.appendChild(headerDiv);
+    projectCard.appendChild(projDescr);
+    projectCard.appendChild(checklistDiv);
+    projectCard.appendChild(buttonDiv);
+    cards.appendChild(projectCard);
+    
+        
+    })
 }
 
-function clearInput() {
-    newProjectName.value = "";
-    newProjectDescription.value = "";
-    newProjectDeadline.value= "";
-    newProjectChecklist.value = "off";
+const addSampleProjec = (() => {
+    const exampleProj = project("New project", "This is a sample project",new Date(2021,02,05), "on");
+    allProjects.push(exampleProj);
+    displayProjects();
 }
+)();

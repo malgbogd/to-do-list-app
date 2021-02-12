@@ -1,10 +1,15 @@
 body {
     background-color: #191919;
-    color: lightgrey;
+    color: grey;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 #content {
+    display: flex;
+    flex-direction: column;
+}
+
+#btnDiv {
     display: flex;
     justify-content: flex-end;
 }
@@ -101,4 +106,57 @@ button:hover {
 #closeDiv {
     display: flex;
     flex-direction: row-reverse;
+    height: 25px;
+}
+
+.projCard {
+    color: darkgray;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    border: 2px solid gray;
+    border-radius: 15px;
+    margin: 5px;
+    margin-top: 15px;
+    padding-left: 15px;
+    background-color: #262626; 
+}
+
+.projTitle {
+    font-size: 25px;
+}
+
+.delete {
+    font-size: 25px;
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+
+.delete:hover {
+    opacity: 60%;
+}
+
+.projDescr {
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.buttonDiv {
+    display: flex;
+    justify-content: center;
+    margin: 20px 15px 10px 0;
+}
+
+.projBtn {
+    font-size: 15px;
+    color: darkgray;
+    margin: 0 2px 0 2px;
+    flex-grow: 1;
+}
+
+.projectHeader {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+
 }
