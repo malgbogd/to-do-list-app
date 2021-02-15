@@ -168,13 +168,14 @@ function clearInput() {
 
 function displayProjects() {
  
+ //clear displayed projects
     cards.innerHTML="";
 
     allProjects.forEach((element) => {
 
     const closeDiv = document.createElement("div");
     closeDiv.id ="closeDiv";
-    
+ //create displaying elements   
     const closeSign = document.createElement("span");
     closeSign.innerHTML = "&times;";
     closeSign.className = "delete";
@@ -201,11 +202,32 @@ function displayProjects() {
     headerDiv.appendChild(projTitle);
     headerDiv.appendChild(projDead);
 
-    const checklistDiv = document.createElement("div");
-
     const projDescr = document.createElement("div");
     projDescr.innerHTML = String(element.description);
     projDescr.className = "projDescr";
+
+    const checklistDiv = document.createElement("div");
+    if (element.checklist =="on") {
+        addProjectChecklistPosition();
+    }
+
+    function addProjectChecklistPosition () {
+      const newPosition = document.createElement("div");
+      newPosition.className = "checkBoxPosition";
+      
+      const checkBox = document.createElement("input");
+      checkBox.type = "checkbox";
+
+      const checkBoxDescr = document.createElement("label");
+      checkBoxDescr.innerHTML = "Description of you todo";
+      checkBoxDescr.contentEditable = "true";
+      checkBoxDescr.style.backgroundColor = "gray";
+      checkBoxDescr.style.color = "#191919";
+
+      newPosition.appendChild(checkBox);
+      newPosition.appendChild(checkBoxDescr);
+      checklistDiv.appendChild(newPosition);
+    }
 
     const buttonDiv = document.createElement("div");
     buttonDiv.className = "buttonDiv";
@@ -238,8 +260,53 @@ function displayProjects() {
     projectCard.appendChild(buttonDiv);
     cards.appendChild(projectCard);
     
+    changeName.addEventListener("click", (()=>{
+        projTitle.contentEditable = "true";
+        projTitle.style.backgroundColor = "gray";
+        projTitle.style.color = "#191919";
+
+        window.addEventListener("keydown", (event)=> {
+            if (event.key === "Enter") {
+                projTitle.contentEditable = "false";
+                projTitle.style.backgroundColor = "inherit";
+                projTitle.style.color = "inherit";
+                element.name = projTitle.innerHTML;    
+            }
+        });
+    }))
+
+    changeDesription.addEventListener("click", (()=>{
+        projDescr.contentEditable = "true";
+        projDescr.style.backgroundColor = "gray";
+        projDescr.style.color = "#191919";
+
+        window.addEventListener("keydown", (event)=> {
+            if (event.key === "Enter") {
+                projDescr.contentEditable = "false";
+                projDescr.style.backgroundColor = "inherit";
+                projDescr.style.color = "inherit";
+                element.description = projDescr.innerHTML;    
+            }
+        });
+    }));
+
+    changeDate.addEventListener("click", (()=>{
+        projDead.contentEditable = "true";
+        projDead.style.backgroundColor = "gray";
+        projDead.style.color = "#191919";
+
+        window.addEventListener("keydown", (event)=> {
+            if (event.key === "Enter") {
+                projDead.contentEditable = "false";
+                projDead.style.backgroundColor = "inherit";
+                projDead.style.color = "inherit";
+                element.deadline = new Date(projDead.innerHTML);    
+            }
+        });
+    }));
+
         
-    })
+    });
 }
 
 const addSampleProjec = (() => {
