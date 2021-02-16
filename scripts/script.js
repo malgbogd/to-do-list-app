@@ -3,7 +3,6 @@ const allProjects = [];
 let projName;
 let projDescriptionL; 
 let projDeadline;
-let projChecklist;
 
 const page = document.getElementById("content");
 let cards;
@@ -64,6 +63,22 @@ const project = (name, description, deadline, checklist) => {
 
 };
 
+const checklistItem = (done, label) => {
+
+    const getDone = () => done;
+    const getLabel = () => label;
+
+    const setDone = (done) => {
+        this.done = done;
+        return this;
+    }
+
+    const setLabel = (label) => {
+        this.label = label;
+        return this;
+    }
+};
+
 function createModal() {
     const modal = document.createElement("div");
     modal.id = "addProjWin"
@@ -110,21 +125,6 @@ function createModal() {
     deadlineInput.id = "projectDeadline";
     deadlineInput.type = "date";
     deadlineInput.className = "modalInput";
-
-    const checklistDiv = document.createElement("div");
-    checklistDiv.id = "checklistDiv";
-    checklistDiv.className = "modalInput";
-
-    const checklistTag = document.createElement("div");
-    checklistTag.innerHTML = "Add checklist?"
-    checklistTag.className = "modalTag";
-    
-    const checklistInput =document.createElement("Input");
-    checklistInput.id = "projectChecklist";
-    checklistInput.type = "checkbox";
-
-    checklistDiv.appendChild(checklistTag);
-    checklistDiv.appendChild(checklistInput);
     
     const addBtnWin = document.createElement("button");
     addBtnWin.innerHTML= "Add";
@@ -138,13 +138,12 @@ function createModal() {
     modal.appendChild(descriptionInput);
     modal.appendChild(deadlineTag);
     modal.appendChild(deadlineInput);
-    modal.appendChild(checklistDiv);
     modal.appendChild(addBtnWin);
     document.body.appendChild(modal);
 
     addBtnWin.addEventListener("click", ()=>{
         getInput()
-        let newProject = project(projName,projDescription,projDeadline, projChecklist);
+        let newProject = project(projName,projDescription,projDeadline, []);
         allProjects.push(newProject);
         clearInput();
         document.getElementById("addProjWin").style.display = "none";
@@ -156,26 +155,23 @@ function getInput() {
     projName = document.getElementById("projectName").value;
     projDescription= document.getElementById("projectDescription").innerHTML; 
     projDeadline= document.getElementById("projectDeadline").value;
-    projChecklist = document.getElementById("projectChecklist").value;
 }
    
 function clearInput() {
     document.getElementById("projectName").value = "";
     document.getElementById("projectDescription").value = "";
     document.getElementById("projectDeadline").value= "";
-    document.getElementById("projectChecklist").value = "off";
+    // document.getElementById("projectChecklist").value = "off";
 }    
 
 function displayProjects() {
- 
- //clear displayed projects
+
     cards.innerHTML="";
 
     allProjects.forEach((element) => {
 
     const closeDiv = document.createElement("div");
     closeDiv.id ="closeDiv";
- //create displaying elements   
     const closeSign = document.createElement("span");
     closeSign.innerHTML = "&times;";
     closeSign.className = "delete";
@@ -207,27 +203,69 @@ function displayProjects() {
     projDescr.className = "projDescr";
 
     const checklistDiv = document.createElement("div");
-    if (element.checklist =="on") {
-        addProjectChecklistPosition();
+
+    
+
+    function addNewChecklistPosition() {
+        const listItem = checklistItem({done:"false",label: "ToDo"});
+        element.checklist.push(listItem);
     }
 
-    function addProjectChecklistPosition () {
-      const newPosition = document.createElement("div");
-      newPosition.className = "checkBoxPosition";
+    function displayChecklistPosition() {
+
+        checklistDiv.innerHTML = "";
+
+        element.checklist.forEach((item) =>{
+            
+            const index = element.checklist.indexOf(item);
+
+            const newPosition = document.createElement("div");
+            newPosition.className = "checkBoxPosition";
       
-      const checkBox = document.createElement("input");
-      checkBox.type = "checkbox";
+            const checkBox = document.createElement("input");
+            checkBox.type = "checkbox";
+            checkBox.checked = item.done;
+            
+            const checkBoxDescr = document.createElement("label");
+            checkBoxDescr.style.flexGrow = "5";
+            checkBoxDescr.innerHTML = " Description of your todo";
+            checkBoxDescr.contentEditable = "true";
+            checkBoxDescr.style.backgroundColor = "gray";
+            checkBoxDescr.style.color = "#191919";
 
-      const checkBoxDescr = document.createElement("label");
-      checkBoxDescr.innerHTML = "Description of you todo";
-      checkBoxDescr.contentEditable = "true";
-      checkBoxDescr.style.backgroundColor = "gray";
-      checkBoxDescr.style.color = "#191919";
+            const editBtn = document.createElement("span");
+            editBtn.innerHTML = "&#x270D;";
+            editBtn.className = "delete";
+            editBtn.addEventListener("click", ()=>{
+                checkBoxDescr.contentEditable = "true";
+                checkBoxDescr.style.backgroundColor = "gray";
+                checkBoxDescr.style.color = "#191919";
+            })
 
-      newPosition.appendChild(checkBox);
-      newPosition.appendChild(checkBoxDescr);
-      checklistDiv.appendChild(newPosition);
-    }
+            const clsBtn = document.createElement("span");
+            clsBtn.innerHTML = "&times;";
+            clsBtn.className = "delete";
+            clsBtn.addEventListener("click",()=>{
+                checklistDiv.removeChild(newPosition);
+                element.checklist.splice(index, 1);
+
+            })
+
+            newPosition.appendChild(checkBox);
+            newPosition.appendChild(checkBoxDescr);
+            newPosition.appendChild(editBtn);
+            newPosition.appendChild(clsBtn);
+            checklistDiv.appendChild(newPosition);
+
+            newPosition.addEventListener("keydown", (event)=> {
+                if (event.key === "Enter") {
+                    checkBoxDescr.contentEditable = "false";
+                    checkBoxDescr.style.backgroundColor = "inherit";
+                    checkBoxDescr.style.color = "inherit";
+                    item.label = checkBoxDescr.value;
+            }});
+        });
+    };
 
     const buttonDiv = document.createElement("div");
     buttonDiv.className = "buttonDiv";
@@ -265,7 +303,7 @@ function displayProjects() {
         projTitle.style.backgroundColor = "gray";
         projTitle.style.color = "#191919";
 
-        window.addEventListener("keydown", (event)=> {
+        projTitle.addEventListener("keydown", (event)=> {
             if (event.key === "Enter") {
                 projTitle.contentEditable = "false";
                 projTitle.style.backgroundColor = "inherit";
@@ -280,7 +318,7 @@ function displayProjects() {
         projDescr.style.backgroundColor = "gray";
         projDescr.style.color = "#191919";
 
-        window.addEventListener("keydown", (event)=> {
+        projDescr.addEventListener("keydown", (event)=> {
             if (event.key === "Enter") {
                 projDescr.contentEditable = "false";
                 projDescr.style.backgroundColor = "inherit";
@@ -295,7 +333,7 @@ function displayProjects() {
         projDead.style.backgroundColor = "gray";
         projDead.style.color = "#191919";
 
-        window.addEventListener("keydown", (event)=> {
+        projDead.addEventListener("keydown", (event)=> {
             if (event.key === "Enter") {
                 projDead.contentEditable = "false";
                 projDead.style.backgroundColor = "inherit";
@@ -304,13 +342,19 @@ function displayProjects() {
             }
         });
     }));
+    
+    addChecklistPosition.addEventListener("click", ()=>{
+        addNewChecklistPosition();
+        displayChecklistPosition();
+    });
 
-        
+    displayChecklistPosition();
+
     });
 }
 
 const addSampleProjec = (() => {
-    const exampleProj = project("New project", "This is a sample project",new Date(2021,02,05), "on");
+    const exampleProj = project("New project", "This is a sample project",new Date(2021,02,05), [{done:"true",label:"Sample ToDo"}]);
     allProjects.push(exampleProj);
     displayProjects();
 }
