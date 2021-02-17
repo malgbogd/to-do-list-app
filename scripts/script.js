@@ -77,6 +77,7 @@ const checklistItem = (done, label) => {
         this.label = label;
         return this;
     }
+    return {done, label, getDone, getLabel, setDone, setLabel}
 };
 
 function createModal() {
@@ -152,10 +153,25 @@ function createModal() {
 };
     
 function getInput() {
-    projName = document.getElementById("projectName").value;
-    projDescription= document.getElementById("projectDescription").innerHTML; 
-    projDeadline= document.getElementById("projectDeadline").value;
-}
+    
+    if (document.getElementById("projectName").value == "") {
+        projName = "New Project";
+    } else {
+        projName = document.getElementById("projectName").value;
+    };
+    
+    if (document.getElementById("projectDescription").innerHTML == "") {
+        projDescription = "Project Description"; 
+    } else {
+    projDescription= document.getElementById("projectDescription").innerHTML;
+    };
+    
+    if (document.getElementById("projectDeadline").value == "") {
+        projDeadline = new Date();
+    } else {
+        projDeadline= document.getElementById("projectDeadline").value;
+    }; 
+};
    
 function clearInput() {
     document.getElementById("projectName").value = "";
@@ -207,8 +223,9 @@ function displayProjects() {
     
 
     function addNewChecklistPosition() {
-        const listItem = checklistItem({done:"false",label: "ToDo"});
+        const listItem = checklistItem("off"," ");
         element.checklist.push(listItem);
+        displayChecklistPosition();
     }
 
     function displayChecklistPosition() {
@@ -224,14 +241,18 @@ function displayProjects() {
       
             const checkBox = document.createElement("input");
             checkBox.type = "checkbox";
-            checkBox.checked = item.done;
+            checkBox.value = item.done;
             
             const checkBoxDescr = document.createElement("label");
             checkBoxDescr.style.flexGrow = "5";
-            checkBoxDescr.innerHTML = " Description of your todo";
-            checkBoxDescr.contentEditable = "true";
-            checkBoxDescr.style.backgroundColor = "gray";
-            checkBoxDescr.style.color = "#191919";
+            if (item.label == " ") {
+                checkBoxDescr.innerHTML = " Your ToDo";
+                checkBoxDescr.contentEditable = "true";
+                checkBoxDescr.style.backgroundColor = "gray";
+                checkBoxDescr.style.color = "#191919";
+            } else {
+                checkBoxDescr.innerHTML = String(item.label);
+            }
 
             const editBtn = document.createElement("span");
             editBtn.innerHTML = "&#x270D;";
@@ -354,7 +375,7 @@ function displayProjects() {
 }
 
 const addSampleProjec = (() => {
-    const exampleProj = project("New project", "This is a sample project",new Date(2021,02,05), [{done:"true",label:"Sample ToDo"}]);
+    const exampleProj = project("New project", "This is a sample project",new Date(2021,02,05), [checklistItem("off","Sample ToDo")]);
     allProjects.push(exampleProj);
     displayProjects();
 }
